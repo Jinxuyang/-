@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搜题</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.0/jquery.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#input1").click(function () {
+            $.ajax({
+                type:"GET",
+                url:"http://tk.qqzo.cn/api1.php?question=",
+                data:{
+                    "question":$("#textarea1").val(),
+                },
+                dataType: "json",
+                headers:{
+                    'Content-type': 'application/x-www-form-urlencoded',
+                },
+                success:function (data) {
+                    if(data.success){
+                        if(data.answer.length == 0){
+                            $("#p2").text("没有找到答案");
+                        }
+                        else{
+                            $("#p2").text(data.answer);
+                        }
+                    }
+                    else{
+                        $("#p2").text("题库有问题");
+                    }
+                    //console.log(data.answer);
+                },
+                error:function () {
+                    $("#p2").text("别瞎输");
+                }
+            })
+        })
+    })
+</script>
+<style type="text/css">
+    #div1 div{
+        display: flex;
+        flex-direction: column;
+        margin-right: 20%;
+        margin-left: 20%;
+    }
+    #textarea1{
+        font-size: 2em;
+    }
+    #input1{
+        margin-top: 20px;
+        margin-right: 45%;
+        margin-left: 45%;
+    }
+
+</style>
+<div id = "div1">
+    <div>
+        <textarea id="textarea1" autofocus="autofocus" placeholder="请输入题目" rows="7"></textarea>
+    </div>
+    <div>
+        <input id = "input1" type="button" value="查找"  >
+    </div>
+    <div>
+        <p id="p2"></p>
+    </div>
+</div>
+</body>
+</html>
