@@ -10,31 +10,23 @@
     $(document).ready(function () {
         $("#input1").click(function () {
             $.ajax({
-                type:"GET",
-                url:"http://tk.qqzo.cn/api1.php?question=",
-                data:{
-                    "question":$("#textarea1").val(),
+                url: 'http://localhost/test.php',
+                type: 'get',
+                data: {
+                    question: "test",
                 },
-                dataType: "json",
-                headers:{
-                    'Content-type': 'application/x-www-form-urlencoded',
-                },
-                success:function (data) {
-                    if(data.success){
-                        if(data.answer.length == 0){
-                            $("#p2").text("没有找到答案");
-                        }
-                        else{
-                            $("#p2").text(data.answer);
-                        }
+                dataType: 'json',
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if(!obj.success){
+                        $("#p2").text("没有找到答案");
                     }
                     else{
-                        $("#p2").text("题库有问题");
+                        $("#p2").text("题目："+obj.question+"       "+"答案："+obj.answer);
                     }
-                    //console.log(data.answer);
                 },
-                error:function () {
-                    $("#p2").text("别瞎输");
+                error: function () {
+                    alert("error");
                 }
             })
         })
