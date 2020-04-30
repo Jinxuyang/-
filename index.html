@@ -3,30 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>搜题</title>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.0/jquery.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#input1").click(function () {
+        $("#button1").click(function () {
+            $("#p1").text("正在查询...");
             $.ajax({
-                url: 'http://localhost/test.php',
+                url: 'http://121.36.19.47/test.php',
                 type: 'get',
                 data: {
-                    question: "test",
+                    question: $("#textarea1").val(),
                 },
                 dataType: 'json',
                 success: function (data) {
                     var obj = JSON.parse(data);
-                    if(!obj.success){
-                        $("#p2").text("没有找到答案");
+                    function changesta(){
+                        if(obj.code == 200){
+                            $("#button1").removeClass();
+                            $("#button1").addClass('btn btn-success');
+                        }else{
+                            $("#button1").removeClass();
+                            $("#button1").addClass('btn btn-warning');
+                        }
+                    }
+                    if(obj.code >=200 && obj.code < 300){
+                        $("#p1").html("题目：" + obj.tm + "<br>" + "答案：" + obj.da + "<br>"+"解析："+obj.jx);
+                        changesta();
+                    }
+                    else if (obj.code >=500 && obj.code < 600){
+                        $("#p1").html("题库出现问题" +"<br>"+ obj.code +"<br>" + obj.msg);
+                        changesta()
                     }
                     else{
-                        $("#p2").text("题目："+obj.question+"       "+"答案："+obj.answer);
+                        $("#p1").html(obj.code +"<br>" + obj.msg);
+                        changesta()
                     }
                 },
                 error: function () {
-                    alert("error");
+                    alert("something wrong");
                 }
             })
         })
@@ -36,28 +53,21 @@
     #div1 div{
         display: flex;
         flex-direction: column;
-        margin-right: 20%;
         margin-left: 20%;
+        margin-right: 20%;
+        margin-top: 10px;
     }
-    #textarea1{
-        font-size: 2em;
-    }
-    #input1{
-        margin-top: 20px;
-        margin-right: 45%;
-        margin-left: 45%;
-    }
-
 </style>
 <div id = "div1">
     <div>
-        <textarea id="textarea1" autofocus="autofocus" placeholder="请输入题目" rows="7"></textarea>
+        <textarea id="textarea1" autofocus="autofocus" placeholder="请输入题目"  class="form-control" ></textarea>
     </div>
     <div>
-        <input id = "input1" type="button" value="查找"  >
+        <button id = "button1" type="button" value="查找" class="btn btn-info" >查找</button>
     </div>
-    <div>
-        <p id="p2"></p>
+    <div class="panel panel-default" id = "div2">
+        <div class="panel-heading" id = "div3" style="margin-top: 0;margin-right: 0;margin-left: 0">查询结果</div>
+        <div class="panel-body" style="margin-top: 0;margin-right: 0;margin-left: 0"><p id="p1"></p></div>
     </div>
 </div>
 </body>
